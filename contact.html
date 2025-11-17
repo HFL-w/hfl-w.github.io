@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于我们 - 风景探索</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* 导航栏样式 */
+        header {
+            position: relative;
+            z-index: 100; /* 确保导航栏在背景之上 */
+        }
+        
+        /* 渐变风景背景 */
+        .hero-gradient {
+            height: 300px; /* 背景高度 */
+            width: 100%;
+            background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.5)), 
+                        url('wangpic/1.jpg') center/cover no-repeat;
+            position: relative;
+            margin-bottom: 3rem; /* 背景与下方内容的间距 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* 背景上的标题（可选） */
+        .hero-gradient h1 {
+            color: white;
+            font-size: 2.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            margin: 0;
+            text-align: center;
+            padding: 0 1rem;
+        }
+        
+        /* 主要内容容器 */
+        .content-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex; /* 使用flex布局 */
+            gap: 2rem; /* 左右区域间距 */
+            box-sizing: border-box;
+        }
+        
+        /* 风景探索栏 - 左半部分 */
+        .featured-tours {
+            width: 50%; /* 左半部分宽度 */
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+        
+        /* 右侧快速链接区域 */
+        .quick-links-section {
+            width: 50%; /* 右半部分宽度 */
+            padding: 1rem;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .quick-links-section h2 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #666;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .quick-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .quick-links li {
+            margin-bottom: 1rem;
+        }
+        
+        .quick-links a {
+            text-decoration: none;
+            color: #333;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
+        
+        .quick-links a:hover {
+            color: #007bff;
+        }
+        
+        .quick-links a i {
+            margin-right: 0.8rem;
+            color: #666;
+        }
+        
+        /* 轮播相关样式 */
+        .carousel-container {
+            width: 100%; /* 相对于父容器100% */
+            margin: 2rem 0;
+            overflow: hidden;
+            position: relative;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .carousel {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        
+        .carousel-item {
+            min-width: 100%;
+            height: 250px;
+            position: relative;
+        }
+        
+        .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .carousel-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            color: white;
+            padding: 1rem;
+        }
+        
+        .carousel-caption h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.2rem;
+        }
+        
+        .carousel-caption p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        
+        .carousel-control {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.3);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+            z-index: 10;
+        }
+        
+        .carousel-control:hover {
+            background: rgba(0,0,0,0.6);
+        }
+        
+        .prev {
+            left: 1rem;
+        }
+        
+        .next {
+            right: 1rem;
+        }
+        
+        .carousel-indicators {
+            position: absolute;
+            bottom: 0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+            z-index: 10;
+        }
+        
+        .indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .indicator.active {
+            background: white;
+        }
+
+        /* 页脚样式 - 文字改为白色 */
+        footer {
+            background-color: #333; /* 深色背景确保白色文字清晰可见 */
+            color: white; /* 文字颜色改为白色 */
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        .footer-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            justify-content: space-between;
+            box-sizing: border-box;
+        }
+        
+        .footer-section {
+            flex: 1;
+        }
+        
+        .footer-section h3 {
+            color: white; /* 标题也改为白色 */
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-section a {
+            color: white; /* 链接文字改为白色 */
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+        
+        .footer-section a:hover {
+            opacity: 0.8; /* 悬停效果 */
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            margin-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            color: white; /* 版权信息文字改为白色 */
+        }
+
+        @media (max-width: 768px) {
+            /* 移动端适配 */
+            .hero-gradient {
+                height: 200px;
+                margin-bottom: 2rem;
+            }
+            
+            .hero-gradient h1 {
+                font-size: 1.8rem;
+            }
+            
+            /* 改为上下布局 */
+            .content-wrapper {
+                flex-direction: column;
+            }
+            
+            .featured-tours, .quick-links-section {
+                width: 100%;
+            }
+            
+            .carousel-item {
+                height: 200px;
+            }
+            
+            .carousel-control {
+                width: 30px;
+                height: 30px;
+                font-size: 0.8rem;
+            }
+            
+            /* 页脚移动端适配 */
+            .footer-container {
+                flex-direction: column;
+                gap: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <a href="index.html"><i class="fas fa-mountain"></i> 风景探索</a>
+            </div>
+            <ul class="nav-links">
+                 <li><a href="index.html">首页</a ></li>
+                 <li><a href="tour-detail.html">旅游套餐</a ></li>
+                 <li><a href="destination-detail.html">风景胜地</a ></li>
+                 <li><a href="about.html">关于我们</a ></li>
+                 <li><a href="contact.html">联系我们</a ></li>
+            </ul>
+            <div class="burger">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+    
+    <!-- 导航栏下方的渐变风景背景 -->
+    <div class="hero-gradient">
+        <h1>探索世界的每一处美景</h1>
+    </div>
+    
+    <!-- 内容容器 - 左右布局 -->
+    <div class="content-wrapper">
+        <!-- 左侧：风景探索栏 -->
+        <section class="featured-tours" id="tours">
+            <h2>风景探索</h2>
+            <p>为您呈现世界最美自然风光</p>
+            
+            <!-- 轮播组件 -->
+            <div class="carousel-container">
+                <div class="carousel">
+                    <div class="carousel-item">
+                        <img src="wangpic/2.jpg" alt="山川风景">
+                        <div class="carousel-caption">
+                            <h3>壮丽山川</h3>
+                            <p>探索雄伟山脉的壮丽景色</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="wangpic/3.jpg" alt="海滩风景">
+                        <div class="carousel-caption">
+                            <h3>碧海沙滩</h3>
+                            <p>享受阳光与海浪的完美结合</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="wangpic/4.jpg" alt="森林风景">
+                        <div class="carousel-caption">
+                            <h3>茂密森林</h3>
+                            <p>沉浸在大自然的绿色怀抱中</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="wangpic/5.jpg" alt="湖泊风景">
+                        <div class="carousel-caption">
+                            <h3>宁静湖泊</h3>
+                            <p>感受湖水带来的平静与安宁</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 轮播控制按钮 -->
+                <button class="carousel-control prev" id="prevBtn">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="carousel-control next" id="nextBtn">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                
+                <!-- 轮播指示器 -->
+                <div class="carousel-indicators" id="indicators"></div>
+            </div>
+        </section>
+        
+        <!-- 右侧：快速链接 -->
+        <section class="quick-links-section">
+            <h2>快速链接</h2>
+            <ul class="quick-links">
+                <li>
+                    <a href="index.html">
+                        <i class="fas fa-home"></i>
+                        首页
+                    </a>
+                </li>
+                <li>
+                    <a href="tour-detail.html">
+                        <i class="fas fa-suitcase"></i>
+                        旅游套餐
+                    </a>
+                </li>
+                <li>
+                    <a href="destination-detail.html">
+                        <i class="fas fa-map-marker-alt"></i>
+                        风景胜地
+                    </a>
+                </li>
+                <li>
+                    <a href="about.html">
+                        <i class="fas fa-info-circle"></i>
+                        关于我们
+                    </a>
+                </li>
+                <li>
+                    <a href="contact.html">
+                        <i class="fas fa-envelope"></i>
+                        联系我们
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fas fa-camera"></i>
+                        风景画廊
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fas fa-blog"></i>
+                        旅行博客
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fas fa-question-circle"></i>
+                        常见问题
+                    </a>
+                </li>
+            </ul>
+        </section>
+    </div>
+    
+    <!-- 页脚 -->
+    <footer>
+        <div class="copyright">
+            <p>&copy; 2025 米奇妙妙屋旅行社. 保留所有权利.</p>
+        </div>
+    </footer>
+
+    <script>
+        // 轮播功能实现
+        document.addEventListener('DOMContentLoaded', function() {
+            const carousel = document.querySelector('.carousel');
+            const carouselItems = document.querySelectorAll('.carousel-item');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const indicatorsContainer = document.getElementById('indicators');
+            let currentIndex = 0;
+            const totalItems = carouselItems.length;
+            
+            // 创建指示器
+            for (let i = 0; i < totalItems; i++) {
+                const indicator = document.createElement('button');
+                indicator.classList.add('indicator');
+                if (i === 0) {
+                    indicator.classList.add('active');
+                }
+                indicator.addEventListener('click', () => goToSlide(i));
+                indicatorsContainer.appendChild(indicator);
+            }
+            
+            const indicators = document.querySelectorAll('.indicator');
+            
+            // 更新轮播显示
+            function updateCarousel() {
+                carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
+                
+                // 更新指示器状态
+                indicators.forEach((indicator, index) => {
+                    if (index === currentIndex) {
+                        indicator.classList.add('active');
+                    } else {
+                        indicator.classList.remove('active');
+                    }
+                });
+            }
+            
+            // 前往指定幻灯片
+            function goToSlide(index) {
+                currentIndex = index;
+                updateCarousel();
+            }
+            
+            // 下一张幻灯片
+            function nextSlide() {
+                currentIndex = (currentIndex + 1) % totalItems;
+                updateCarousel();
+            }
+            
+            // 上一张幻灯片
+            function prevSlide() {
+                currentIndex = (currentIndex - 1 + totalItems) % totalItems;
+                updateCarousel();
+            }
+            
+            // 自动轮播
+            let slideInterval = setInterval(nextSlide, 5000);
+            
+            // 按钮事件监听
+            prevBtn.addEventListener('click', () => {
+                clearInterval(slideInterval);
+                prevSlide();
+                slideInterval = setInterval(nextSlide, 5000);
+            });
+            
+            nextBtn.addEventListener('click', () => {
+                clearInterval(slideInterval);
+                nextSlide();
+                slideInterval = setInterval(nextSlide, 5000);
+            });
+            
+            // 鼠标悬停时暂停自动轮播
+            const carouselContainer = document.querySelector('.carousel-container');
+            carouselContainer.addEventListener('mouseenter', () => {
+                clearInterval(slideInterval);
+            });
+            
+            // 鼠标离开时恢复自动轮播
+            carouselContainer.addEventListener('mouseleave', () => {
+                slideInterval = setInterval(nextSlide, 5000);
+            });
+        });
+    </script>
+</body>
+</html>
