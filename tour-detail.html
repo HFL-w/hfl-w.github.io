@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>马尔代夫浪漫之旅 - 风景探索</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        .logo a {
+            text-decoration: none;
+            color: #333;
+            font-size: 1.5rem;
+        }
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 1rem;
+        }
+        .nav-links li a {
+            text-decoration: none;
+            color: #777;
+            transition: color 0.3s;
+        }
+        .nav-links li a:hover {
+            color: #333;
+        }
+        .burger i {
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                align-items: center;
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .burger i {
+                display: block;
+            }
+        }
+        .tour-detail {
+            padding: 2rem 1rem;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin: 2rem auto;
+            max-width: 1200px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .tour-gallery {
+            display: flex;
+            gap: 1rem;
+        }
+        .main-image img {
+            width: 100%;
+            height: 600px; /* 增加高度 */
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .thumbnail-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .thumbnail img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+        .thumbnail.active img {
+            opacity: 1;
+        }
+        .tour-content h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        .tour-meta span {
+            display: inline-block;
+            margin-right: 1rem;
+            color: #777;
+            font-size: 1.1rem;
+        }
+        .rating i {
+            color: #ffc107;
+        }
+        .tour-description h2 {
+            font-size: 2.5rem;
+            margin-top: 2rem;
+            color: #333;
+        }
+        .tour-description ul {
+            list-style-type: disc;
+            margin-left: 2rem;
+        }
+        .itinerary {
+            margin-top: 1rem;
+        }
+        .itinerary .day h4 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        .tour-booking {
+            margin-top: 2rem;
+        }
+        .price-box {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .price .original-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 1.2rem;
+        }
+        .price .current-price {
+            font-size: 2rem;
+            color: #ff6b6b;
+        }
+        .price .discount {
+            color: #4caf50;
+            font-size: 1.2rem;
+        }
+        .btn-book {
+            background-color: #ff6b6b;
+            color: #fff;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .btn-book:hover {
+            background-color: #e05656;
+        }
+        .testimonials {
+            padding: 2rem 1rem;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin: 2rem auto;
+            max-width: 1200px;
+        }
+        .testimonial-container {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .testimonial-card {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 1rem;
+            width: calc(33.33% - 1rem);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        @media (max-width: 768px) {
+            .testimonial-card {
+                width: 100%;
+            }
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .user-info img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+        .user-info h4 {
+            margin: 0;
+        }
+        .testimonial-card p {
+            margin-top: 1rem;
+            color: #555;
+        }
+        .date {
+            color: #999;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1rem 0;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <a href="index.html"><i class="fas fa-mountain"></i> 风景探索</a>
+            </div>
+            <ul class="nav-links">
+                 <li><a href="index.html">首页</a ></li>
+                 <li><a href="tour-detail.html">旅游套餐</a ></li>
+                 <li><a href="destination-detail.html">风景胜地</a ></li>
+                 <li><a href="about.html">关于我们</a ></li>
+                 <li><a href="contact.html">联系我们</a ></li>
+            </ul>
+            <div class="burger">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <!-- 套餐详情 -->
+    <section class="tour-detail">
+        <div class="container">
+            <div class="tour-gallery">
+                <div class="main-image">
+                    <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="马尔代夫">
+                </div>
+                <div class="thumbnail-container">
+                    <div class="thumbnail active">
+                        <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="马尔代夫">
+                    </div>
+                    <div class="thumbnail">
+                        <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="马尔代夫海滩">
+                    </div>
+                    <div class="thumbnail">
+                        <img src="https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="水上别墅">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tour-content">
+                <h1>马尔代夫浪漫之旅</h1>
+                <div class="tour-meta">
+                    <span><i class="fas fa-map-marker-alt"></i> 马尔代夫</span>
+                    <span><i class="fas fa-calendar-alt"></i> 7天6晚</span>
+                    <span><i class="fas fa-dollar-sign"></i> ¥12,800起</span>
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                        <span>4.5 (128评价)</span>
+                    </div>
+                </div>
+                
+                <div class="tour-description">
+                    <h2>套餐描述</h2>
+                    <p>马尔代夫是印度洋上的珍珠项链，由26个自然环礁和1192个珊瑚岛组成。这个浪漫之旅将带您体验最纯净的海滩、最清澈的海水和最豪华的水上别墅。</p>
+                    
+                    <h3>行程亮点</h3>
+                    <ul>
+                        <li>入住五星级水上别墅，享受私人泳池和直接入海通道</li>
+                        <li>每日丰盛自助早餐，3次特色晚餐</li>
+                        <li>免费浮潜装备和珊瑚礁探索活动</li>
+                        <li>夕阳巡航，观赏海豚</li>
+                        <li>专业摄影服务，留下难忘回忆</li>
+                    </ul>
+                    
+                    <h3>每日行程</h3>
+                    <div class="itinerary">
+                        <div class="day">
+                            <h4>第一天: 抵达马累</h4>
+                            <p>抵达马累国际机场，专车接送至水上飞机码头，飞往度假岛屿。入住后自由活动，享受度假村设施。</p>
+                        </div>
+                        <div class="day">
+                            <h4>第二天: 珊瑚礁浮潜</h4>
+                            <p>上午参加浮潜课程，下午探索度假村周边的珊瑚礁，观赏五彩斑斓的热带鱼和海龟。</p>
+                        </div>
+                        <!-- 更多天数... -->
+                    </div>
+                </div>
+                
+                <div class="tour-booking">
+                    <h2>预订信息</h2>
+                    <div class="price-box">
+                        <div class="price">
+                            <span class="original-price">¥15,800</span>
+                            <span class="current-price">¥12,800</span>
+                            <span class="discount">省¥3,000</span>
+                        </div>
+                        <p class="notice">价格包含: 住宿、早餐、部分活动、机场接送</p>
+                    </div>
+                    <button class="btn btn-book">立即预订</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 客户评价 -->
+    <section class="testimonials">
+        <div class="container">
+            <h2>客户评价</h2>
+            <div class="testimonial-container">
+                <div class="testimonial-card">
+                    <div class="user-info">
+                        <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="用户头像">
+                        <div>
+                            <h4>张女士</h4>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p>"这是我度过的最美好的假期！水上别墅简直太棒了，每天醒来就能看到碧蓝的海水。服务人员非常专业，食物也很美味。强烈推荐！"</p>
+                    <span class="date">2024年5月15日</span>
+                </div>
+                <div class="testimonial-card">
+                    <div class="user-info">
+                        <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="用户头像">
+                        <div>
+                            <h4>李先生</h4>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p>"这次旅行真的超出了我的期望。酒店的服务非常周到，潜水体验也非常好。整个旅程都非常愉快。"</p>
+                    <span class="date">2024年4月20日</span>
+                </div>
+                <div class="testimonial-card">
+                    <div class="user-info">
+                        <img src="https://randomuser.me/api/portraits/women/67.jpg" alt="用户头像">
+                        <div>
+                            <h4>王女士</h4>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p>"这里的餐饮和服务都是一流的。尤其是晚上在海边看星星的感觉，真是太美了。我一定会再来。"</p>
+                    <span class="date">2024年3月10日</span>
+                </div>
+                <div class="testimonial-card">
+                    <div class="user-info">
+                        <img src="https://randomuser.me/api/portraits/men/89.jpg" alt="用户头像">
+                        <div>
+                            <h4>赵先生</h4>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p>"从接机开始就感受到了家一般的温暖。整个行程安排得井井有条，特别喜欢那个夕阳巡航。"</p>
+                    <span class="date">2024年2月25日</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚-->
+    <footer>
+        <p>&copy; 2023 风景探索. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // 套餐详情页专属JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // 缩略图点击切换主图
+            const thumbnails = document.querySelectorAll('.thumbnail');
+            const mainImage = document.querySelector('.main-image img');
+            
+            thumbnails.forEach(thumb => {
+                thumb.addEventListener('click', function() {
+                    // 移除所有active类
+                    thumbnails.forEach(t => t.classList.remove('active'));
+                    // 添加active类到当前点击的缩略图
+                    this.classList.add('active');
+                    // 更新主图
+                    mainImage.src = this.querySelector('img').src;
+                });
+            });
+            
+            // 菜单按钮点击事件
+            const burger = document.querySelector('.burger');
+            const navLinks = document.querySelector('.nav-links');
+            if(burger && navLinks) {
+                burger.addEventListener('click', function() {
+                    navLinks.classList.toggle('active');
+                });
+            }
+
+            // 预订按钮点击事件
+            const bookBtn = document.querySelector('.btn-book');
+            if(bookBtn) {
+                bookBtn.addEventListener('click', function() {
+                    alert('即将跳转到预订页面，请稍候...');
+                    // 实际项目中这里会跳转到预订系统
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+
+
