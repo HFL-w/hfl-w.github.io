@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <title>期末作业</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- 完全离线化：移除所有外部CDN，改为内嵌样式与原生脚本 -->
+  <style>
+    /* 模拟 Bootstrap 5 的核心样式 (离线兼容，保留原有类名) */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      line-height: 1.5;
+      background-color: #f8f9fa;
+    }
+    /* 工具类 */
+    .p-5 { padding: 3rem; }
+    .p-4 { padding: 1.5rem; }
+    .mt-5 { margin-top: 3rem; }
+    .mt-4 { margin-top: 1.5rem; }
+    .mt-2 { margin-top: 0.5rem; }
+    .mb-4 { margin-bottom: 1.5rem; }
+    .mb-0 { margin-bottom: 0; }
+    .text-center { text-align: center; }
+    .text-white { color: #fff; }
+    .text-muted { color: #6c757d; }
+    .bg-primary { background-color: #5c8a8a; }
+    .bg-dark { background-color: #212529; }
+    .bg-white { background-color: #fff; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+    .container-fluid { width: 100%; padding-right: 1rem; padding-left: 1rem; }
+    .row { display: flex; flex-wrap: wrap; margin-right: -0.5rem; margin-left: -0.5rem; }
+    .col-sm-4 { flex: 0 0 33.3333%; max-width: 33.3333%; padding: 0 0.5rem; }
+    .col-sm-8 { flex: 0 0 66.6667%; max-width: 66.6667%; padding: 0 0.5rem; }
+    @media (max-width: 768px) {
+      .col-sm-4, .col-sm-8 { flex: 0 0 100%; max-width: 100%; }
+    }
+    .navbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; background-color: #343a40; padding: 0.5rem 1rem; }
+    .navbar-nav { display: flex; flex-direction: row; list-style: none; margin: 0; padding: 0; }
+    .nav-item { margin-right: 1rem; }
+    .nav-link { color: rgba(255,255,255,0.75); text-decoration: none; padding: 0.5rem 0; display: block; }
+    .nav-link.active, .nav-link:hover { color: #fff; }
+    .fakeimg { height: 200px; background: #aaa; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+    .btn { display: inline-block; padding: 0.375rem 0.75rem; border-radius: 0.25rem; background-color: #5c8a8a; color: white; text-decoration: none; }
+    hr { margin: 1rem 0; border: 0; border-top: 1px solid #dee2e6; }
+    /* 自定义可视化组件样式 */
+    .svg-container { background: #f0fdf4; padding: 20px; border-radius: 5px; border: 1px solid #dee2e6; text-align: center; }
+    .interactive-box { height: 150px; background-color: #e9ecef; border: 1px solid #dee2e6; border-radius: 5px; display: flex; justify-content: center; align-items: center; position: relative; cursor: crosshair; }
+    #coordTooltip { position: absolute; display: none; background-color: rgba(0,0,0,0.7); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 12px; pointer-events: none; z-index: 1000; font-family: monospace; }
+    #chessboard { height: 250px; border: 1px solid #dee2e6; border-radius: 5px; overflow: hidden; background: white; }
+    #chessboard table { width: 100%; height: 100%; border-collapse: collapse; }
+    #chessboard td { text-align: center; vertical-align: middle; border: 1px solid #dee2e6; padding: 0; width: 11.11%; }
+    canvas { display: block; width: 100%; height: auto; background: #fff; border-radius: 5px; }
+    .chart-card { background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 1.5rem; border: 1px solid #e9ecef; }
+  </style>
+</head>
+<body>
+
+<div id="coordTooltip"></div>
+
+<!-- 头部 - 完全保留原框架类名 -->
+<div class="p-5 text-white text-center" style="background-color: #aaa">
+  <h1>期末作业数据可视化与交互展示</h1>
+ 
+</div>
+
+<!-- 导航栏 - 保持原有结构 -->
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+  <div class="container-fluid">
+    <ul class="navbar-nav">
+      <li class="nav-item"><a class="nav-link active" href="#">首页</a></li>
+      <li class="nav-item"><a class="nav-link" href="#">数据</a></li>
+      <li class="nav-item"><a class="nav-link" href="#">交互</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container mt-5">
+  <div class="row">
+    <!-- ========= 左侧列 (原右侧板块移入) ========= -->
+    <div class="col-sm-4">
+      <!-- 鼠标悬浮坐标 (原右侧) -->
+      <h2> 鼠标悬浮获取坐标</h2>
+      <h5>跟随鼠标动态显示</h5>
+      <div id="hoverArea" class="interactive-box" style="height: 150px;">
+        <span class="text-muted">在此区域内移动鼠标，坐标会在鼠标旁边显示</span>
+      </div>
+
+      <!-- 趋势折线图 -->
+      <h2 class="mt-5"> 趋势折线图 </h2>
+      <div class="chart-card">
+        <canvas id="lineChart" height="100" style="width:100%; height:auto; background:white;"></canvas>
+        <div class="text-muted small mt-2"></div>
+      </div>
+
+      <!-- 数据柱状图 -->
+      <h2 class="mt-4">数据柱状图 </h2>
+      <div class="chart-card">
+        <canvas id="barChart" height="100" style="width:100%; height:auto; background:white;"></canvas>
+        <div class="text-muted small mt-2"></div>
+      </div>
+
+      <!-- Canvas 两点成线交互 -->
+      <h2 class="mt-4">Canvas 两点成线交互</h2>
+      <h5>在框内任意点击两点即可连线</h5>
+      <canvas id="drawCanvas" width="600" height="200" style="background-color: #f8f9fa; border: 1px solid #dee2e6; width: 100%; display: block; cursor: crosshair; border-radius: 8px;"></canvas>
+      <p class="text-muted small mt-2">依次点击两个点 → 自动生成连线；双击画布可清空所有线段。</p>
+      <hr class="d-sm-none">
+    </div>
+
+    <!-- ========= 右侧列 (原左侧板块移入) ========= -->
+    <div class="col-sm-8">
+      <!-- SVG 矢量图形 -->
+      <h2>SVG 矢量图形</h2>
+      <div class="svg-container mb-4">
+        <svg width="200" height="150" viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="auroraGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.9" />
+              <stop offset="50%" stop-color="#a855f7" stop-opacity="0.9" />
+              <stop offset="100%" stop-color="#ec4899" stop-opacity="0.9" />
+            </linearGradient>
+            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="2.5" result="blur" />
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <rect width="200" height="150" fill="#0a1f2e" rx="6" />
+          <circle cx="30" cy="25" r="1.5" fill="#fff" opacity="0.8" />
+          <circle cx="170" cy="20" r="2" fill="#fde047" opacity="0.9" />
+          <circle cx="140" cy="45" r="1" fill="#fff" opacity="0.6" />
+          <circle cx="60" cy="55" r="1.2" fill="#fff" opacity="0.7" />
+          <circle cx="100" cy="18" r="1.8" fill="#facc15" opacity="0.8" />
+          <circle cx="180" cy="70" r="1" fill="#bae6fd" opacity="0.8" />
+          <path d="M 0 130 Q 30 60 70 100 Q 110 45 150 95 Q 180 65 200 110 L 200 150 L 0 150 Z" fill="url(#auroraGrad)" opacity="0.85" filter="url(#glow)"/>
+          <circle cx="170" cy="38" r="12" fill="#fef3c7" opacity="0.9" />
+          <circle cx="175" cy="35" r="10" fill="#0a1f2e" opacity="0.4" />
+          <path d="M 120 40 Q 125 34 130 40 Q 135 34 140 40" stroke="#cbd5e1" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.7"/>
+          <text x="10" y="145" fill="#e0f2fe" font-size="6" font-family="monospace">极光</text>
+        </svg>
+        <p class="mt-2 text-muted mb-0">渐变山脉 | 星月点缀 | 原生矢量</p>
+      </div>
+
+      <!-- 本地视频 -->
+      <h2 class="mt-4">本地视频演示</h2>
+      <div class="mb-4">
+        <video width="100%" controls style="border-radius: 5px; border: 1px solid #dee2e6;" poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120'%3E%3Crect width='200' height='120' fill='%23294e79'/%3E%3Ctext x='50%25' y='50%25' fill='white' font-size='12' text-anchor='middle' dy='.3em'%3E视频占位%3C/text%3E%3C/svg%3E"  >
+          <source src="demo.mp4" type="video/mp4" >
+          您的浏览器不支持 HTML5 视频播放。请将 <code>demo.mp4</code> 放置于同级目录。
+        </video>
+       
+      </div>
+
+      <!-- 星号棋盘 -->
+      <h2 class="mt-4">星号菱形棋盘</h2>
+      <div id="chessboard" style="height: 250px;"></div>
+    </div>
+  </div>
+</div>
+
+<div class="mt-5 p-4 bg-dark text-white text-center">
+  <p>期末页面</p>
+</div>
+
+<script>
+  (function() {
+    // ======================= 1. 鼠标悬浮坐标跟随 =======================
+    const hoverArea = document.getElementById('hoverArea');
+    const tooltip = document.getElementById('coordTooltip');
+    if (hoverArea && tooltip) {
+      hoverArea.addEventListener('mousemove', function(e) {
+        const rect = hoverArea.getBoundingClientRect();
+        const x = Math.round(e.clientX - rect.left);
+        const y = Math.round(e.clientY - rect.top);
+        tooltip.style.display = 'block';
+        tooltip.innerText = `(${x}, ${y})`;
+        tooltip.style.left = (e.pageX + 15) + 'px';
+        tooltip.style.top = (e.pageY + 15) + 'px';
+      });
+      hoverArea.addEventListener('mouseleave', function() {
+        tooltip.style.display = 'none';
+      });
+    }
+
+    // ======================= 2. 星号菱形棋盘 (9x9, 曼哈顿距离) =======================
+    function buildChessboard() {
+      const container = document.getElementById('chessboard');
+      if (!container) return;
+      const size = 9;
+      const center = Math.floor(size / 2);
+      let html = '<table style="width:100%; height:100%; border-collapse:collapse;">';
+      for (let i = 0; i < size; i++) {
+        html += '<tr>';
+        for (let j = 0; j < size; j++) {
+          const isDark = (i + j) % 2 === 1;
+          const bgColor = isDark ? '#f1f8f6' : '#ffffff';
+          const distance = Math.abs(i - center) + Math.abs(j - center);
+          const content = (distance <= center) ? '<span style="color:#5c8a8a; font-weight:bold;">*</span>' : '';
+          html += `<td style="background-color:${bgColor}; text-align:center; vertical-align:middle; border:1px solid #dee2e6;">${content}</td>`;
+        }
+        html += '</tr>';
+      }
+      html += '</table>';
+      container.innerHTML = html;
+    }
+    buildChessboard();
+
+    // ======================= 3. 原生折线图 =======================
+    function drawLineChart() {
+      const canvas = document.getElementById('lineChart');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const container = canvas.parentElement;
+      const width = container.clientWidth - 20;
+      canvas.width = width;
+      canvas.height = 200;
+      
+      const data = [12, 19, 15, 25, 22, 30];
+      const labels = ['W1', 'W2', 'W3', 'W4', 'W5', 'W6'];
+      const maxVal = Math.max(...data) + 5;
+      const paddingLeft = 40;
+      const paddingRight = 20;
+      const paddingTop = 20;
+      const paddingBottom = 30;
+      const chartWidth = canvas.width - paddingLeft - paddingRight;
+      const chartHeight = canvas.height - paddingTop - paddingBottom;
+      const stepX = chartWidth / (data.length - 1);
+      
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.beginPath();
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 0.5;
+      for (let i = 0; i <= 4; i++) {
+        const y = paddingTop + (i / 4) * chartHeight;
+        ctx.moveTo(paddingLeft, y);
+        ctx.lineTo(canvas.width - paddingRight, y);
+        ctx.stroke();
+      }
+      ctx.beginPath();
+      ctx.moveTo(paddingLeft, paddingTop);
+      ctx.lineTo(paddingLeft, canvas.height - paddingBottom);
+      ctx.lineTo(canvas.width - paddingRight, canvas.height - paddingBottom);
+      ctx.stroke();
+      
+      const points = [];
+      for (let i = 0; i < data.length; i++) {
+        const x = paddingLeft + i * stepX;
+        const y = canvas.height - paddingBottom - (data[i] / maxVal) * chartHeight;
+        points.push({ x, y });
+      }
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
+      ctx.strokeStyle = '#3b82f6';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+      ctx.lineTo(points[points.length-1].x, canvas.height - paddingBottom);
+      ctx.lineTo(points[0].x, canvas.height - paddingBottom);
+      ctx.fillStyle = 'rgba(59,130,246,0.1)';
+      ctx.fill();
+      for (let i = 0; i < points.length; i++) {
+        ctx.beginPath();
+        ctx.arc(points[i].x, points[i].y, 4, 0, 2 * Math.PI);
+        ctx.fillStyle = '#f97316';
+        ctx.fill();
+        ctx.fillStyle = '#1e293b';
+        ctx.font = '10px system-ui';
+        ctx.fillText(data[i], points[i].x - 8, points[i].y - 6);
+        ctx.fillStyle = '#6c757d';
+        ctx.fillText(labels[i], points[i].x - 8, canvas.height - paddingBottom + 15);
+      }
+    }
+    
+    // ======================= 4. 原生柱状图 =======================
+    function drawBarChart() {
+      const canvas = document.getElementById('barChart');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const container = canvas.parentElement;
+      const width = container.clientWidth - 20;
+      canvas.width = width;
+      canvas.height = 200;
+      
+      const data = [20, 25, 30, 35, 40, 45, 55];
+      const categories = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+      const maxVal = 100;
+      const paddingLeft = 35;
+      const paddingRight = 15;
+      const paddingBottom = 28;
+      const chartHeight = canvas.height - 20 - paddingBottom;
+      const barWidth = (canvas.width - paddingLeft - paddingRight) / data.length - 4;
+      
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.beginPath();
+      ctx.strokeStyle = '#cfdfed';
+      for (let i = 0; i <= 4; i++) {
+        const y = canvas.height - paddingBottom - (i / 4) * chartHeight;
+        ctx.moveTo(paddingLeft - 5, y);
+        ctx.lineTo(canvas.width - paddingRight, y);
+        ctx.stroke();
+      }
+      
+      for (let i = 0; i < data.length; i++) {
+        const barHeight = (data[i] / maxVal) * chartHeight;
+        const x = paddingLeft + i * (barWidth + 4);
+        const y = canvas.height - paddingBottom - barHeight;
+        ctx.fillStyle = '#10b981';
+        ctx.fillRect(x, y, barWidth, barHeight);
+        ctx.fillStyle = '#2c3e50';
+        ctx.font = '10px monospace';
+        ctx.fillText(data[i], x + barWidth/4, y - 3);
+        ctx.fillStyle = '#5f6c84';
+        ctx.fillText(categories[i], x + barWidth/3, canvas.height - paddingBottom + 14);
+      }
+      ctx.fillStyle = '#1f4f6e';
+      ctx.font = 'bold 10px system-ui';
+      ctx.fillText('数值', 8, 25);
+    }
+    
+    window.addEventListener('resize', function() {
+      drawLineChart();
+      drawBarChart();
+    });
+    drawLineChart();
+    drawBarChart();
+    
+    // ======================= 5. Canvas 两点成线交互 =======================
+    const drawCanvas = document.getElementById('drawCanvas');
+    let ctxDraw = null;
+    let segments = [];
+    let tempPoint = null;
+    
+    function initCanvas() {
+      if (!drawCanvas) return;
+      drawCanvas.width = 600;
+      drawCanvas.height = 200;
+      ctxDraw = drawCanvas.getContext('2d');
+      redrawAll();
+    }
+    
+    function drawBackground(ctx, w, h) {
+      ctx.save();
+      ctx.strokeStyle = '#dee2e6';
+      ctx.lineWidth = 0.5;
+      for (let i = 0; i < w; i += 40) {
+        ctx.beginPath();
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i, h);
+        ctx.stroke();
+      }
+      for (let i = 0; i < h; i += 40) {
+        ctx.beginPath();
+        ctx.moveTo(0, i);
+        ctx.lineTo(w, i);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+    
+    function redrawAll() {
+      if (!ctxDraw) return;
+      ctxDraw.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+      drawBackground(ctxDraw, drawCanvas.width, drawCanvas.height);
+      for (let seg of segments) {
+        ctxDraw.beginPath();
+        ctxDraw.moveTo(seg.x1, seg.y1);
+        ctxDraw.lineTo(seg.x2, seg.y2);
+        ctxDraw.strokeStyle = '#e11d48';
+        ctxDraw.lineWidth = 2.5;
+        ctxDraw.stroke();
+        ctxDraw.beginPath();
+        ctxDraw.arc(seg.x1, seg.y1, 4, 0, 2*Math.PI);
+        ctxDraw.fillStyle = '#2c5e7a';
+        ctxDraw.fill();
+        ctxDraw.beginPath();
+        ctxDraw.arc(seg.x2, seg.y2, 4, 0, 2*Math.PI);
+        ctxDraw.fillStyle = '#2c5e7a';
+        ctxDraw.fill();
+        ctxDraw.beginPath();
+        ctxDraw.arc(seg.x1, seg.y1, 2, 0, 2*Math.PI);
+        ctxDraw.fillStyle = '#facc15';
+        ctxDraw.fill();
+        ctxDraw.beginPath();
+        ctxDraw.arc(seg.x2, seg.y2, 2, 0, 2*Math.PI);
+        ctxDraw.fillStyle = '#facc15';
+        ctxDraw.fill();
+      }
+      if (tempPoint) {
+        ctxDraw.beginPath();
+        ctxDraw.arc(tempPoint.x, tempPoint.y, 5, 0, 2*Math.PI);
+        ctxDraw.fillStyle = '#f59e0b';
+        ctxDraw.fill();
+      }
+    }
+    
+    function getCanvasCoords(e) {
+      const rect = drawCanvas.getBoundingClientRect();
+      const scaleX = drawCanvas.width / rect.width;
+      const scaleY = drawCanvas.height / rect.height;
+      let x = (e.clientX - rect.left) * scaleX;
+      let y = (e.clientY - rect.top) * scaleY;
+      x = Math.min(Math.max(0, x), drawCanvas.width);
+      y = Math.min(Math.max(0, y), drawCanvas.height);
+      return { x, y };
+    }
+    
+    if (drawCanvas) {
+      drawCanvas.addEventListener('click', function(e) {
+        const point = getCanvasCoords(e);
+        if (tempPoint === null) {
+          tempPoint = point;
+          redrawAll();
+        } else {
+          segments.push({ x1: tempPoint.x, y1: tempPoint.y, x2: point.x, y2: point.y });
+          tempPoint = null;
+          redrawAll();
+        }
+      });
+      drawCanvas.addEventListener('dblclick', function() {
+        segments = [];
+        tempPoint = null;
+        redrawAll();
+      });
+      initCanvas();
+    }
+  })();
+</script>
+</body>
+</html>
